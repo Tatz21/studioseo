@@ -42,11 +42,13 @@
 - [x] **Phase 6:** SEO Data Extraction — metadata, headings, canonical, links, images, schema, status
 - [x] **Phase 7:** Technical SEO Engine — deterministic checks and evidence
 - [x] **Phase 8:** SEO Scoring Engine — weighted, versioned scoring and snapshots
-- [ ] **Phase 9:** SEO Map — graph, search/filter/depth, drawer, performance
-- [ ] **Phase 10:** Page Audit — checks, PageSpeed, recommendations; **MVP Boundary**
+- [x] **Phase 9:** SEO Map — graph, search/filter/depth, drawer, performance
+- [x] **Phase 10:** Page Audit — checks, PageSpeed, recommendations; **MVP Boundary**
 
 ### Integrations & Intelligence (Phases 11–24)
-- [ ] **Phases 11–13:** PageSpeed, Google Search Console, Bing Webmaster
+- [x] **Phase 11:** PageSpeed Integration (Google API v5, Mobile vs Desktop, Core Web Vitals)
+- [ ] **Phase 12:** Google Search Console (OAuth, Search Analytics, Sitemaps, URL Inspection)
+- [ ] **Phase 13:** Bing Webmaster
 - [ ] **Phases 14–17:** Keyword Tracking, SERP Integration, Competitor Discovery, Keyword Gap
 - [ ] **Phases 18–19:** Backlinks, Content Analysis
 - [ ] **Phases 20–24:** GEO/Local SEO, AEO, AI Visibility, AI Assistant, Recommendations Engine
@@ -71,6 +73,9 @@
 | **ADR-008** | 2026-09-22 | Modular AST DOM Extraction Pipeline with Hierarchy Validation & Schema Validation | Isolates specialized extractors for metadata, headings, canonical, links, images, schema, and content readability with resilience against malformed markup. | ✅ Accepted |
 | **ADR-009** | 2026-09-22 | Deterministic Technical SEO Rule Engine with Measured Evidence & Code Remediation | Provides pure, reproducible rule evaluations with concrete measured values vs criteria, eliminating false positives and generating code fixes. | ✅ Accepted |
 | **ADR-010** | 2026-09-22 | Versioned Multi-Category SEO Scoring Algorithm with Historical Snapshots & Diff Comparison | Delivers calibrated score grades (A+ to F), transparent category weight attribution (Tech 30%, Content 25%, Media 20%, A11y 15%, Schema 10%), and time-series progress tracking. | ✅ Accepted |
+| **ADR-011** | 2026-09-22 | Dual-Mode Canvas SEO Architecture Map with Velocity Verlet Physics & Radial Concentric Layout | Enables technical exploration of site hierarchy, internal PageRank equity, crawl depth tiers, and orphan page detection at 60 FPS with auto-damped idle CPU consumption. | ✅ Accepted |
+| **ADR-012** | 2026-09-22 | Unified Page Audit Engine with Core Web Vitals (LCP, INP, CLS) & Quantified Action Plan | Connects DOM extraction AST with deterministic technical rules, Google 2026 Core Web Vitals thresholds, and an actionable remediation roadmap with copyable code snippets, establishing the platform's core MVP boundary. | ✅ Accepted |
+| **ADR-013** | 2026-09-22 | Live Google PageSpeed Insights v5 API Integration with Mobile vs Desktop Strategies | Connects to Google's official PageSpeed API using authenticated API key for real-time Lighthouse 13.4.1 audits, Core Web Vitals extraction (FCP, LCP, TBT, CLS), strategy comparative deltas, and persistent audit history. | ✅ Accepted |
 
 ---
 
@@ -84,5 +89,10 @@
   - Completed Phase 6 (SEO Data Extraction: metadata, headings tree & hierarchy validation, canonical & hreflang, links & rel attributes, images & alt Web Vitals, Schema.org JSON-LD, and interactive Data Extraction Inspector).
   - Completed Phase 7 (Technical SEO Engine: 24 standardized deterministic rules, measured evidence collection, impact assessments, code fix templates, and Technical Audit Inspector).
   - Completed Phase 8 (SEO Scoring Engine: versioned multi-category scoring algorithm, letter grading system, snapshot store with 30-day history, snapshot comparison modal, and live snapshot capture).
-  - Verified Phase 8 in browser with 0 errors.
-  - Ready for Phase 9 (SEO Map — graph, search/filter/depth, drawer, performance).
+  - Completed Phase 9 (SEO Map: graph topology data models, BFS crawl depth calculation, dual-mode layout engine with Velocity Verlet physics and radial concentric hierarchy, slide-over Node Inspector Drawer, and interactive Canvas visualizer).
+  - Completed Phase 10 (Page Audit: on-page checks, Core Web Vitals engine for LCP, INP, CLS, FCP, TTFB, asset weight breakdown, and prioritized recommendations engine with copyable code fixes).
+  - **🏆 Core MVP Boundary Reached (Phases 0 through 10 are 100% complete, verified, and operational).**
+- **2026-09-22 (Session 2):**
+  - Completed Phase 11 (PageSpeed Integration: Google PageSpeed Insights v5 live API integration with verified key, Mobile vs Desktop strategies, Lighthouse 13.4.1 category scores, Core Web Vitals lab metrics, Opportunities/Diagnostics breakdown, and comparative delta tables).
+  - Verified Phase 11 live in browser against `https://example.com` with real Google Cloud responses.
+  - Ready for Phase 12 (Google Search Console — OAuth, Search Analytics, Sitemaps, URL Inspection).

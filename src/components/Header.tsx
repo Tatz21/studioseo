@@ -12,7 +12,9 @@ import {
   Globe,
   ShieldCheck,
   Award,
-  Network
+  Network,
+  Zap,
+  LineChart
 } from 'lucide-react';
 import { UserProfileDropdown } from './auth/UserProfileDropdown';
 
@@ -24,6 +26,8 @@ export type NavigationTab =
   | 'scoring'
   | 'map'
   | 'audit' 
+  | 'pagespeed'
+  | 'gsc'
   | 'serp' 
   | 'keywords' 
   | 'links' 
@@ -158,7 +162,25 @@ export const Header: React.FC<HeaderProps> = ({
             style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
           >
             <BarChart3 size={16} />
-            <span>Audit & Issues</span>
+            <span>Page Audit</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('pagespeed')}
+            className={`btn ${activeTab === 'pagespeed' ? 'btn-primary' : 'btn-ghost'}`}
+            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
+          >
+            <Zap size={16} />
+            <span>PageSpeed API</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('gsc')}
+            className={`btn ${activeTab === 'gsc' ? 'btn-primary' : 'btn-ghost'}`}
+            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
+          >
+            <LineChart size={16} />
+            <span>Search Console</span>
           </button>
 
           <button
@@ -230,4 +252,18 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             onClick={onOpenExport}
-            className="btn btn-outline-eme
+            className="btn btn-outline-emerald"
+            style={{ fontSize: '0.8rem', padding: '0.45rem 0.85rem' }}
+            title="Export Report"
+          >
+            <Download size={15} />
+            <span>Export</span>
+          </button>
+
+          {/* User Profile & Auth Trigger */}
+          <UserProfileDropdown />
+        </div>
+      </div>
+    </header>
+  );
+};

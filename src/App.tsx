@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Header, NavigationTab } from './components/Header';
 import { UrlInspectorBar } from './components/UrlInspectorBar';
 import { HealthScoreGauge } from './components/HealthScoreGauge';
-import { IssueTracker } from './components/IssueTracker';
+import { PageAuditView } from './components/pageaudit/PageAuditView';
 import { SerpSocialPreview } from './components/SerpSocialPreview';
 import { HeadingHierarchyTree } from './components/HeadingHierarchyTree';
 import { KeywordDensityTable } from './components/KeywordDensityTable';
@@ -19,6 +19,8 @@ import { DataExtractionInspector } from './components/extractor/DataExtractionIn
 import { TechnicalAuditInspector } from './components/technical/TechnicalAuditInspector';
 import { ScoreSnapshotExplorer } from './components/scoring/ScoreSnapshotExplorer';
 import { SeoMapGraph } from './components/map/SeoMapGraph';
+import { PageSpeedExplorer } from './components/pagespeed/PageSpeedExplorer';
+import { GoogleSearchConsoleExplorer } from './components/gsc/GoogleSearchConsoleExplorer';
 import { PRESET_SITES } from './engine/presets';
 import { runFullAudit, fetchUrlHtml } from './engine/index';
 import { AuditReport } from './engine/types';
@@ -210,7 +212,18 @@ export const App: React.FC = () => {
         )}
 
         {activeTab === 'audit' && (
-          <IssueTracker issues={report.issues} />
+          <PageAuditView
+            initialHtml={currentHtml}
+            initialUrl={report.targetUrl}
+          />
+        )}
+
+        {activeTab === 'pagespeed' && (
+          <PageSpeedExplorer />
+        )}
+
+        {activeTab === 'gsc' && (
+          <GoogleSearchConsoleExplorer />
         )}
 
         {activeTab === 'serp' && (
@@ -247,4 +260,25 @@ export const App: React.FC = () => {
         )}
 
         {activeTab === 'database' && (
-          <SchemaE
+          <SchemaExplorer />
+        )}
+      </main>
+
+      {/* Modals */}
+      <ExportModal
+        isOpen={isExportOpen}
+        onClose={() => setIsExportOpen(false)}
+        report={report}
+      />
+
+      <HtmlPasteModal
+        isOpen={isPasteHtmlOpen}
+        onClose={() => setIsPasteHtmlOpen(false)}
+        onAuditHtml={handleAuditHtml}
+      />
+
+      {/* Authentication Modal */}
+      <AuthModal />
+    </div>
+  );
+};
