@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   BarChart3, 
   Search, 
@@ -17,9 +17,13 @@ import {
   LineChart,
   Compass,
   Target,
-  Users
+  Users,
+  ChevronDown,
+  Check,
+  ArrowRight
 } from 'lucide-react';
 import { UserProfileDropdown } from './auth/UserProfileDropdown';
+import { PRESET_SITES } from '../engine/presets';
 
 export type NavigationTab = 
   | 'websites'
@@ -41,262 +45,477 @@ export type NavigationTab =
   | 'robots'
   | 'database';
 
-interface HeaderProps {
+export type WorkspaceDomain = 'audits' | 'integrations' | 'keywords' | 'devtools' | 'websites';
+
+export const TAB_TO_WORKSPACE: Record<NavigationTab, WorkspaceDomain> = {
+  websites: 'websites',
+  crawler: 'audits',
+  extraction: 'audits',
+  technical: 'audits',
+  scoring: 'audits',
+  map: 'audits',
+  audit: 'audits',
+  pagespeed: 'integrations',
+  gsc: 'integrations',
+  bing: 'integrations',
+  ranktracker: 'keywords',
+  serp: 'keywords',
+  competitors: 'keywords',
+  keywords: 'keywords',
+  links: 'devtools',
+  schema: 'devtools',
+  robots: 'devtools',
+  database: 'devtools',
+};
+
+interface WorkspaceDefinition {
+  id: WorkspaceDomain;
+  label: string;
+  defaultTab: NavigationTab;
+  icon: React.ReactNode;
+  description: string;
+  tools: {
+    id: NavigationTab;
+    label: string;
+    icon: React.ReactNode;
+    badge?: string;
+  }[];
+}
+
+const WORKSPACES: WorkspaceDefinition[] = [
+  {
+    id: 'audits',
+    label: 'Audits & Core',
+    defaultTab: 'audit',
+    icon: <BarChart3 size={15} />,
+    description: 'Technical audits, architecture graph, and scoring engine',
+    tools: [
+      { id: 'audit', label: 'Page Audit', icon: <BarChart3 size={14} /> },
+      { id: 'map', label: 'SEO Map', icon: <Network size={14} /> },
+      { id: 'technical', label: 'Technical Engine', icon: <ShieldCheck size={14} /> },
+      { id: 'scoring', label: 'SEO Scoring', icon: <Award size={14} /> },
+      { id: 'extraction', label: 'Data Extraction', icon: <Layers size={14} /> },
+      { id: 'crawler', label: 'Crawler Engine', icon: <Bot size={14} /> },
+    ]
+  },
+  {
+    id: 'integrations',
+    label: 'Search Integrations',
+    defaultTab: 'gsc',
+    icon: <Zap size={15} />,
+    description: 'Google Search Console, PageSpeed Insights, and Bing API',
+    tools: [
+      { id: 'gsc', label: 'Search Console', icon: <LineChart size={14} />, badge: 'GSC Live' },
+      { id: 'pagespeed', label: 'PageSpeed API', icon: <Zap size={14} />, badge: 'PSI' },
+      { id: 'bing', label: 'Bing Webmaster', icon: <Compass size={14} /> },
+    ]
+  },
+  {
+    id: 'keywords',
+    label: 'Keywords & Competitors',
+    defaultTab: 'ranktracker',
+    icon: <Target size={15} />,
+    description: 'Keyword rank tracking, SERP intelligence & competitor discovery',
+    tools: [
+      { id: 'ranktracker', label: 'Keyword Tracking', icon: <Target size={14} /> },
+      { id: 'serp', label: 'SERP Intelligence', icon: <Search size={14} />, badge: 'Phase 15' },
+      { id: 'competitors', label: 'Competitor Discovery', icon: <Users size={14} />, badge: 'Phase 16' },
+      { id: 'keywords', label: 'Headings & Density', icon: <FileSpreadsheet size={14} /> },
+    ]
+  },
+  {
+    id: 'devtools',
+    label: 'Developer Tools',
+    defaultTab: 'schema',
+    icon: <Code2 size={15} />,
+    description: 'JSON-LD generator, robots tester, link auditor & SQL workbench',
+    tools: [
+      { id: 'schema', label: 'Schema Generator', icon: <Code2 size={14} /> },
+      { id: 'robots', label: 'Robots & Sitemaps', icon: <Bot size={14} /> },
+      { id: 'links', label: 'Links & Images', icon: <Layers size={14} /> },
+      { id: 'database', label: 'Database Schema', icon: <Database size={14} /> },
+    ]
+  }
+];
+
+export interface HeaderProps {
   activeTab: NavigationTab;
   setActiveTab: (tab: NavigationTab) => void;
   onOpenExport: () => void;
   onOpenPasteHtml: () => void;
+  onOpenCommandPalette: () => void;
+  currentProjectName?: string;
+  currentProjectUrl?: string;
+  onSelectProjectPreset?: (presetId: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
   onOpenExport,
-  onOpenPasteHtml
+  onOpenPasteHtml,
+  onOpenCommandPalette,
+  currentProjectName = 'PostersCraft',
+  currentProjectUrl = 'https://www.posterscraft.com',
+  onSelectProjectPreset
 }) => {
+  const [isProjectDropdownOpen, setIsProjectDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Derive current workspace from active tab
+  const currentWorkspaceId = TAB_TO_WORKSPACE[activeTab];
+  const currentWorkspace = WORKSPACES.find(w => w.id === currentWorkspaceId);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsProjectDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleWorkspaceClick = (ws: WorkspaceDefinition) => {
+    // If we are already in this workspace, keep current tab; otherwise switch to workspace defaultTab
+    if (TAB_TO_WORKSPACE[activeTab] === ws.id) {
+      return;
+    }
+    setActiveTab(ws.defaultTab);
+  };
+
   return (
     <header style={{
       borderBottom: '1px solid var(--border-subtle)',
-      background: 'rgba(11, 15, 23, 0.85)',
-      backdropFilter: 'blur(16px)',
+      background: 'rgba(11, 15, 23, 0.92)',
+      backdropFilter: 'blur(20px)',
       position: 'sticky',
       top: 0,
-      zIndex: 50
+      zIndex: 50,
+      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4)'
     }}>
+      {/* Tier 1: Main Global Header Bar */}
       <div style={{
-        maxWidth: '1440px',
+        maxWidth: '1560px',
         margin: '0 auto',
-        padding: '0.75rem 2rem',
+        padding: '0.65rem 1.75rem',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '1rem'
+        gap: '1.25rem'
       }}>
-        {/* Logo & Brand */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-          <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '10px',
-            background: 'linear-gradient(135deg, var(--accent-primary) 0%, #06B6D4 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 15px rgba(16, 185, 129, 0.4)'
-          }}>
-            <Sparkles size={22} color="#042F2E" strokeWidth={2.5} />
-          </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span style={{ 
-                fontFamily: 'var(--font-display)', 
-                fontWeight: 800, 
-                fontSize: '1.25rem',
-                letterSpacing: '-0.02em',
-                color: '#FFFFFF'
-              }}>
-                SEO Studio <span style={{ color: 'var(--accent-primary)' }}>Pro</span>
-              </span>
-              <span className="badge badge-cyan" style={{ fontSize: '0.65rem' }}>v2.4 Live</span>
+        {/* Left: Brand + Active Project Pill */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexShrink: 0 }}>
+          {/* Logo & Brand */}
+          <div 
+            onClick={() => setActiveTab('audit')}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}
+            title="SEO Studio Pro - Return to Overview"
+          >
+            <div style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '9px',
+              background: 'linear-gradient(135deg, var(--accent-primary) 0%, #06B6D4 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 0 16px rgba(16, 185, 129, 0.35)'
+            }}>
+              <Sparkles size={20} color="#042F2E" strokeWidth={2.5} />
             </div>
-            <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-              Enterprise SEO Audit & Optimization Suite
-            </p>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <span style={{ 
+                  fontFamily: 'var(--font-display)', 
+                  fontWeight: 800, 
+                  fontSize: '1.15rem',
+                  letterSpacing: '-0.02em',
+                  color: '#FFFFFF'
+                }}>
+                  SEO Studio <span style={{ color: 'var(--accent-primary)' }}>Pro</span>
+                </span>
+                <span className="badge badge-cyan" style={{ fontSize: '0.62rem', padding: '0.1rem 0.4rem' }}>v2.5</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Active Project Selector Pill */}
+          <div style={{ position: 'relative' }} ref={dropdownRef}>
+            <button
+              onClick={() => setIsProjectDropdownOpen(!isProjectDropdownOpen)}
+              className="project-pill"
+              title="Active Project / Domain Switcher"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.35rem 0.75rem',
+                border: isProjectDropdownOpen ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(255, 255, 255, 0.1)',
+                background: isProjectDropdownOpen ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.03)'
+              }}
+            >
+              <div className="status-dot status-dot-emerald" />
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: 1.1 }}>
+                <span style={{ fontSize: '0.78rem', fontWeight: 600, color: '#FFFFFF' }}>
+                  {currentProjectName}
+                </span>
+                <span style={{ fontSize: '0.66rem', color: 'var(--text-muted)' }}>
+                  {currentProjectUrl.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+                </span>
+              </div>
+              <ChevronDown size={14} color="var(--text-muted)" style={{ marginLeft: '0.25rem' }} />
+            </button>
+
+            {/* Active Project Floating Menu */}
+            {isProjectDropdownOpen && (
+              <div style={{
+                position: 'absolute',
+                top: 'calc(100% + 6px)',
+                left: 0,
+                width: '320px',
+                background: '#111827',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                borderRadius: '12px',
+                boxShadow: '0 15px 35px -5px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+                padding: '0.65rem',
+                zIndex: 100,
+                animation: 'scaleUp 0.15s cubic-bezier(0.16, 1, 0.3, 1)'
+              }}>
+                <div style={{
+                  padding: '0.4rem 0.5rem 0.5rem',
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+                  fontSize: '0.7rem',
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  color: 'var(--text-muted)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <span>Switch Workspace Target</span>
+                  <span className="badge badge-emerald" style={{ fontSize: '0.6rem' }}>Live Site</span>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', marginTop: '0.4rem' }}>
+                  {PRESET_SITES.map((site) => {
+                    const isSelected = currentProjectUrl.toLowerCase().includes(site.url.replace(/^https?:\/\/(www\.)?/, '').toLowerCase());
+                    return (
+                      <button
+                        key={site.id}
+                        onClick={() => {
+                          if (onSelectProjectPreset) {
+                            onSelectProjectPreset(site.id);
+                          }
+                          setIsProjectDropdownOpen(false);
+                        }}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '0.55rem 0.65rem',
+                          borderRadius: '8px',
+                          background: isSelected ? 'rgba(16, 185, 129, 0.12)' : 'transparent',
+                          border: isSelected ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid transparent',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          transition: 'all var(--transition-fast)'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                          <Globe size={16} color={isSelected ? 'var(--accent-primary)' : 'var(--text-muted)'} />
+                          <div>
+                            <div style={{ fontSize: '0.8125rem', fontWeight: isSelected ? 600 : 500, color: isSelected ? '#FFFFFF' : 'var(--text-secondary)' }}>
+                              {site.name}
+                            </div>
+                            <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                              {site.category}
+                            </div>
+                          </div>
+                        </div>
+                        {isSelected && <Check size={14} color="var(--accent-primary)" />}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div style={{
+                  marginTop: '0.5rem',
+                  paddingTop: '0.5rem',
+                  borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+                  display: 'flex',
+                  justifyContent: 'space-between'
+                }}>
+                  <button
+                    onClick={() => {
+                      setActiveTab('websites');
+                      setIsProjectDropdownOpen(false);
+                    }}
+                    className="btn btn-ghost"
+                    style={{ fontSize: '0.75rem', padding: '0.35rem 0.5rem', color: 'var(--accent-primary)', width: '100%' }}
+                  >
+                    <Globe size={13} style={{ marginRight: '0.35rem' }} />
+                    Manage All Sites & Crawl Configs →
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
+        {/* Center: 4 Workspace Domains Navigation */}
+        <nav style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '0.3rem',
+          background: 'rgba(255, 255, 255, 0.02)',
+          padding: '0.25rem',
+          borderRadius: '10px',
+          border: '1px solid rgba(255, 255, 255, 0.06)'
+        }}>
+          {WORKSPACES.map((ws) => {
+            const isActive = currentWorkspaceId === ws.id;
+            return (
+              <button
+                key={ws.id}
+                onClick={() => handleWorkspaceClick(ws)}
+                className={`workspace-tab ${isActive ? 'active' : ''}`}
+                title={ws.description}
+              >
+                <span style={{ color: isActive ? 'var(--accent-primary)' : 'inherit', display: 'flex' }}>
+                  {ws.icon}
+                </span>
+                <span>{ws.label}</span>
+              </button>
+            );
+          })}
+
+          <div style={{ width: '1px', height: '18px', background: 'rgba(255, 255, 255, 0.08)', margin: '0 0.2rem' }} />
+
+          {/* Websites & Projects direct tab */}
           <button
             onClick={() => setActiveTab('websites')}
-            className={`btn ${activeTab === 'websites' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
+            className={`workspace-tab ${activeTab === 'websites' ? 'active' : ''}`}
+            title="Registered Websites & Crawl Settings"
           >
-            <Globe size={16} />
-            <span>Websites & Projects</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('crawler')}
-            className={`btn ${activeTab === 'crawler' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <Bot size={16} />
-            <span>Crawler Engine</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('extraction')}
-            className={`btn ${activeTab === 'extraction' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <Layers size={16} />
-            <span>Data Extraction</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('technical')}
-            className={`btn ${activeTab === 'technical' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <ShieldCheck size={16} />
-            <span>Technical Engine</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('scoring')}
-            className={`btn ${activeTab === 'scoring' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <Award size={16} />
-            <span>SEO Scoring</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('map')}
-            className={`btn ${activeTab === 'map' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <Network size={16} />
-            <span>SEO Map</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('audit')}
-            className={`btn ${activeTab === 'audit' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <BarChart3 size={16} />
-            <span>Page Audit</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('pagespeed')}
-            className={`btn ${activeTab === 'pagespeed' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <Zap size={16} />
-            <span>PageSpeed API</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('gsc')}
-            className={`btn ${activeTab === 'gsc' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <LineChart size={16} />
-            <span>Search Console</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('bing')}
-            className={`btn ${activeTab === 'bing' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <Compass size={16} />
-            <span>Bing Webmaster</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('ranktracker')}
-            className={`btn ${activeTab === 'ranktracker' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <Target size={16} />
-            <span>Keyword Tracking</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('serp')}
-            className={`btn ${activeTab === 'serp' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <Search size={16} />
-            <span>SERP Intelligence</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('competitors')}
-            className={`btn ${activeTab === 'competitors' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <Users size={16} />
-            <span>Competitors</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('keywords')}
-            className={`btn ${activeTab === 'keywords' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <FileSpreadsheet size={16} />
-            <span>Keywords & Headings</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('links')}
-            className={`btn ${activeTab === 'links' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <Layers size={16} />
-            <span>Links & Images</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('schema')}
-            className={`btn ${activeTab === 'schema' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <Code2 size={16} />
-            <span>Schema.org Generator</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('robots')}
-            className={`btn ${activeTab === 'robots' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <Bot size={16} />
-            <span>Robots & Sitemaps</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('database')}
-            className={`btn ${activeTab === 'database' ? 'btn-primary' : 'btn-ghost'}`}
-            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
-          >
-            <Database size={16} />
-            <span>Database & Schema</span>
+            <Globe size={15} color={activeTab === 'websites' ? 'var(--accent-primary)' : 'inherit'} />
+            <span>Projects</span>
           </button>
         </nav>
 
-        {/* Action Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        {/* Right: Command Bar Trigger & Actions */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexShrink: 0 }}>
+          {/* Spotlight Command Bar Trigger */}
+          <button
+            onClick={onOpenCommandPalette}
+            className="command-trigger-btn"
+            title="Search all 18 tools and actions (Ctrl+K)"
+          >
+            <Search size={14} color="var(--text-muted)" />
+            <span style={{ fontSize: '0.78rem' }}>Search tools...</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+              <kbd className="command-trigger-kbd">⌘K</kbd>
+            </div>
+          </button>
+
+          {/* Paste Raw HTML */}
           <button
             onClick={onOpenPasteHtml}
             className="btn btn-secondary"
-            style={{ fontSize: '0.8rem', padding: '0.45rem 0.85rem' }}
-            title="Paste raw HTML directly"
+            style={{ fontSize: '0.78rem', padding: '0.4rem 0.75rem' }}
+            title="Paste raw HTML source for offline audit"
           >
-            <Code2 size={15} />
+            <Code2 size={14} />
             <span>Paste HTML</span>
           </button>
 
+          {/* Export Report */}
           <button
             onClick={onOpenExport}
             className="btn btn-outline-emerald"
-            style={{ fontSize: '0.8rem', padding: '0.45rem 0.85rem' }}
-            title="Export Report"
+            style={{ fontSize: '0.78rem', padding: '0.4rem 0.75rem' }}
+            title="Export full audit report"
           >
-            <Download size={15} />
+            <Download size={14} />
             <span>Export</span>
           </button>
 
-          {/* User Profile & Auth Trigger */}
+          {/* User Profile */}
           <UserProfileDropdown />
         </div>
       </div>
+
+      {/* Tier 2: Contextual Sub-Nav Ribbon */}
+      {currentWorkspace && activeTab !== 'websites' && (
+        <div className="subnav-ribbon">
+          {/* Subnav Breadcrumb & Active Domain */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+            <span style={{ 
+              fontSize: '0.72rem', 
+              fontWeight: 600, 
+              color: 'var(--text-muted)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem'
+            }}>
+              {currentWorkspace.label}
+              <ArrowRight size={12} color="var(--text-muted)" />
+            </span>
+          </div>
+
+          {/* Subnav Tool Pills */}
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '0.35rem', 
+            overflowX: 'auto',
+            scrollbarWidth: 'none'
+          }}>
+            {currentWorkspace.tools.map((tool) => {
+              const isToolActive = activeTab === tool.id;
+              return (
+                <button
+                  key={tool.id}
+                  onClick={() => setActiveTab(tool.id)}
+                  className={`subnav-pill ${isToolActive ? 'active' : ''}`}
+                >
+                  <span style={{ display: 'flex' }}>{tool.icon}</span>
+                  <span>{tool.label}</span>
+                  {tool.badge && (
+                    <span style={{
+                      fontSize: '0.6rem',
+                      padding: '0.08rem 0.35rem',
+                      borderRadius: '4px',
+                      background: isToolActive ? 'rgba(4, 47, 46, 0.8)' : 'rgba(6, 182, 212, 0.15)',
+                      color: isToolActive ? '#FFFFFF' : 'var(--accent-cyan)',
+                      fontWeight: 700
+                    }}>
+                      {tool.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Quick Context Indicator */}
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '0.5rem',
+            fontSize: '0.72rem',
+            color: 'var(--text-muted)',
+            flexShrink: 0
+          }}>
+            <span className="status-dot status-dot-emerald" />
+            <span>Live Analysis Mode</span>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Globe, Sparkles, Loader2, PlayCircle } from 'lucide-react';
 import { PRESET_SITES } from '../engine/presets';
 import { cleanAndSanitizeUrl } from '../engine/index';
@@ -17,6 +17,10 @@ export const UrlInspectorBar: React.FC<UrlInspectorBarProps> = ({
   onSelectPreset
 }) => {
   const [inputUrl, setInputUrl] = useState(currentUrl);
+
+  useEffect(() => {
+    setInputUrl(currentUrl);
+  }, [currentUrl]);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();

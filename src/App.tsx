@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header, NavigationTab } from './components/Header';
 import { UrlInspectorBar } from './components/UrlInspectorBar';
 import { HealthScoreGauge } from './components/HealthScoreGauge';
@@ -10,6 +10,7 @@ import { SchemaGenerator } from './components/SchemaGenerator';
 import { RobotsSitemapTester } from './components/RobotsSitemapTester';
 import { ExportModal } from './components/ExportModal';
 import { HtmlPasteModal } from './components/HtmlPasteModal';
+import { CommandPalette } from './components/common/CommandPalette';
 import { AuthModal } from './components/auth/AuthModal';
 import { SchemaExplorer } from './components/db/SchemaExplorer';
 import { WebsiteManager } from './components/sites/WebsiteManager';
@@ -43,7 +44,28 @@ export const App: React.FC = () => {
 
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isPasteHtmlOpen, setIsPasteHtmlOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [selectedSerpKeyword, setSelectedSerpKeyword] = useState<string>('vintage movie posters');
+
+  // Global Ctrl+K / Cmd+K Command Palette Keyboard Shortcut
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Compute current active project details
+  const activePreset = PRESET_SITES.find(p => 
+    p.url.toLowerCase() === report.targetUrl.toLowerCase() || 
+    p.url.replace(/^https?:\/\/(www\.)?/, '').toLowerCase() === report.targetUrl.replace(/^https?:\/\/(www\.)?/, '').toLowerCase()
+  );
+  const currentProjectName = activePreset?.name?.split('(')[0]?.trim() || 
+    (report.targetUrl ? new URL(report.targetUrl).hostname.replace(/^www\./, '') : 'PostersCraft');
 
   // Handle URL scanning
   const handleScanUrl = async (url: string) => {
@@ -108,6 +130,10 @@ export const App: React.FC = () => {
         setActiveTab={setActiveTab}
         onOpenExport={() => setIsExportOpen(true)}
         onOpenPasteHtml={() => setIsPasteHtmlOpen(true)}
+        onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+        currentProjectName={currentProjectName}
+        currentProjectUrl={report.targetUrl}
+        onSelectProjectPreset={handleSelectPreset}
       />
 
       {/* Radar scanning bar */}
@@ -306,6 +332,24 @@ export const App: React.FC = () => {
         isOpen={isPasteHtmlOpen}
         onClose={() => setIsPasteHtmlOpen(false)}
         onAuditHtml={handleAuditHtml}
+      />
+
+      {/* Global Command Palette Spotlight */}
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onSelectTab={(tab) => {
+          setActiveTab(tab);
+          setIsCommandPaletteOpen(false);
+        }}
+        onOpenExport={() => {
+          setIsCommandPaletteOpen(false);
+          setIsExportOpen(true);
+        }}
+        onOpenPasteHtml={() => {
+          setIsCommandPaletteOpen(false);
+          setIsPasteHtmlOpen(true);
+        }}
       />
 
       {/* Authentication Modal */}

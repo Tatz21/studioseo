@@ -2,6 +2,91 @@ import { PresetSite } from './types';
 
 export const PRESET_SITES: PresetSite[] = [
   {
+    id: 'posterscraft-agency',
+    name: 'PostersCraft (Web Dev & Marketing Agency)',
+    category: 'Agency & Digital Marketing',
+    url: 'https://www.posterscraft.com',
+    description: 'Full-service web development, digital marketing, and enterprise branding agency based in Kolkata.',
+    html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PostersCraft | Web Development Agency in Kolkata & Marketing Agency</title>
+  <meta name="description" content="Accelerate your digital growth with PostersCraft. Leading web design, custom software development, enterprise SEO, and digital marketing agency in Kolkata.">
+  <link rel="canonical" href="https://www.posterscraft.com">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="PostersCraft | Web Development Agency in Kolkata & Marketing Agency">
+  <meta property="og:description" content="Custom web applications, e-commerce stores, and high-ROI digital marketing campaigns crafted by Kolkata's top digital agency.">
+  <meta property="og:image" content="https://www.posterscraft.com/og-banner.jpg">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.posterscraft.com">
+  <meta property="og:site_name" content="PostersCraft">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="PostersCraft | Web Development Agency in Kolkata & Marketing Agency">
+  <meta name="twitter:description" content="Transform your online presence with tailored web development and performance marketing.">
+  <meta name="twitter:image" content="https://www.posterscraft.com/og-banner.jpg">
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "PostersCraft",
+    "url": "https://www.posterscraft.com",
+    "logo": "https://www.posterscraft.com/logo.png",
+    "description": "Premier Web Development and Digital Marketing Agency in Kolkata",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Kolkata",
+      "addressRegion": "West Bengal",
+      "addressCountry": "IN"
+    },
+    "sameAs": [
+      "https://facebook.com/posterscraft",
+      "https://linkedin.com/company/posterscraft"
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="https://www.posterscraft.com">Home</a>
+      <a href="https://www.posterscraft.com/services">Services</a>
+      <a href="https://www.posterscraft.com/portfolio">Portfolio</a>
+      <a href="https://www.posterscraft.com/about">About Us</a>
+      <a href="https://www.posterscraft.com/contact">Contact</a>
+    </nav>
+  </header>
+  <main>
+    <h1>Leading Web Development & Digital Marketing Agency in Kolkata</h1>
+    <p>At PostersCraft, we craft bespoke digital experiences that convert visitors into loyal customers. From headless web applications and mobile apps to performance-driven SEO and brand identities, we build scalable software and marketing machines for ambitious brands worldwide.</p>
+    
+    <h2>Custom Web & Application Development</h2>
+    <p>We build robust, high-performance web applications with React, Next.js, and modern cloud architectures. Every website is engineered for speed, mobile responsiveness, and high conversion rates.</p>
+    <img src="https://www.posterscraft.com/assets/web-dev-showcase.jpg" alt="PostersCraft web development portfolio showcase in Kolkata" loading="lazy">
+    
+    <h2>Search Engine Optimization & Digital Marketing</h2>
+    <p>Dominate search engine rankings and scale customer acquisition with data-backed technical SEO, content marketing, and targeted Google Ads management.</p>
+    <img src="https://www.posterscraft.com/assets/seo-strategy.jpg" alt="Data-driven SEO audit and organic growth strategy dashboard" loading="lazy">
+    
+    <h3>Why Industry Leaders Partner With PostersCraft</h3>
+    <ul>
+      <li>End-to-end digital capabilities from UX research to full-stack deployment.</li>
+      <li>Proven track record with 150+ successful web and marketing deployments.</li>
+      <li>Obsession with Core Web Vitals, page speed, and organic search visibility.</li>
+      <li>Dedicated agile sprint team delivering on-time and within budget.</li>
+    </ul>
+  </main>
+</body>
+</html>`
+  },
+  {
     id: 'timeliners-studio',
     name: 'Timeliners Kolkata (Wedding & Corporate Studio)',
     category: 'Local Business & Creative',

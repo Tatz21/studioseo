@@ -17,6 +17,25 @@ export const DEFAULT_CRAWL_CONFIG: CrawlConfig = {
 
 const INITIAL_WEBSITES: Website[] = [
   {
+    id: 'w1000000-0000-0000-0000-000000000003',
+    orgId: 'e1000000-0000-0000-0000-000000000001',
+    domain: 'posterscraft.com',
+    name: 'PostersCraft Marketing & Dev',
+    canonicalUrl: 'https://www.posterscraft.com',
+    crawlConfig: {
+      ...DEFAULT_CRAWL_CONFIG,
+      crawlDepthLimit: 4,
+      maxPagesLimit: 750,
+      userAgent: 'Googlebot'
+    },
+    status: 'active',
+    healthScore: 96,
+    grade: 'A+',
+    totalPagesCrawled: 64,
+    lastAuditedAt: '2026-09-22T08:00:00.000Z',
+    createdAt: '2026-03-01T10:00:00.000Z'
+  },
+  {
     id: 'w1000000-0000-0000-0000-000000000001',
     orgId: 'e1000000-0000-0000-0000-000000000001',
     domain: 'timelinerskolkata.com',
