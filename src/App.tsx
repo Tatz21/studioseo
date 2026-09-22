@@ -25,6 +25,7 @@ import { BingWebmasterExplorer } from './components/bing/BingWebmasterExplorer';
 import { KeywordTrackerExplorer } from './components/keywords/KeywordTrackerExplorer';
 import { SerpExplorer } from './components/serp/SerpExplorer';
 import { CompetitorDiscoveryExplorer } from './components/competitors/CompetitorDiscoveryExplorer';
+import { KeywordGapExplorer } from './components/keywordgap/KeywordGapExplorer';
 import { PRESET_SITES } from './engine/presets';
 import { runFullAudit, fetchUrlHtml, cleanAndSanitizeUrl } from './engine/index';
 import { AuditReport } from './engine/types';
@@ -287,6 +288,13 @@ export const App: React.FC = () => {
               setActiveTab('serp');
             }}
             onNavigateToKeywords={() => setActiveTab('ranktracker')}
+          />
+        )}
+
+        {activeTab === 'keywordgap' && (
+          <KeywordGapExplorer
+            currentUrl={report.targetUrl}
+            onNavigateToTracker={() => setActiveTab('ranktracker')}
           />
         )}
 

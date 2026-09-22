@@ -2,6 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'http';
 import { isSafeToFetch, sanitizeUrl } from './ssrfGuard';
 import { handleSerpRequest } from './serpApi';
 import { handleCompetitorRequest } from './competitorApi';
+import { handleKeywordGapRequest } from './gapApi';
 
 export interface FetchRequestBody {
   url: string;
@@ -202,6 +203,11 @@ export function crawlerApiPlugin() {
           return;
         }
 
+        if (url === '/api/keyword-gap') {
+          await handleKeywordGapRequest(req, res);
+          return;
+        }
+
         next();
       });
     },
@@ -226,6 +232,11 @@ export function crawlerApiPlugin() {
 
         if (url === '/api/competitors') {
           await handleCompetitorRequest(req, res);
+          return;
+        }
+
+        if (url === '/api/keyword-gap') {
+          await handleKeywordGapRequest(req, res);
           return;
         }
 

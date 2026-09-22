@@ -39,6 +39,7 @@ export type NavigationTab =
   | 'ranktracker'
   | 'serp' 
   | 'competitors'
+  | 'keywordgap'
   | 'keywords' 
   | 'links' 
   | 'schema' 
@@ -61,6 +62,7 @@ export const TAB_TO_WORKSPACE: Record<NavigationTab, WorkspaceDomain> = {
   ranktracker: 'keywords',
   serp: 'keywords',
   competitors: 'keywords',
+  keywordgap: 'keywords',
   keywords: 'keywords',
   links: 'devtools',
   schema: 'devtools',
@@ -120,6 +122,7 @@ const WORKSPACES: WorkspaceDefinition[] = [
       { id: 'ranktracker', label: 'Keyword Tracking', icon: <Target size={14} /> },
       { id: 'serp', label: 'SERP Intelligence', icon: <Search size={14} />, badge: 'Phase 15' },
       { id: 'competitors', label: 'Competitor Discovery', icon: <Users size={14} />, badge: 'Phase 16' },
+      { id: 'keywordgap', label: 'Keyword Gap', icon: <Layers size={14} />, badge: 'Phase 17' },
       { id: 'keywords', label: 'Headings & Density', icon: <FileSpreadsheet size={14} /> },
     ]
   },

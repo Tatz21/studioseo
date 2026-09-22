@@ -142,6 +142,14 @@ const COMMAND_ITEMS: CommandItem[] = [
     keywords: ['competitors', 'rivals', 'market share', 'battle', 'overlap', 'displacement']
   },
   {
+    id: 'keywordgap',
+    title: 'Keyword Gap Analysis',
+    category: 'Keywords & Competitors',
+    description: 'Multi-domain keyword overlap, Venn distribution, missing high-volume opportunities, and arbitrage quick wins',
+    icon: <Layers size={18} color="#06B6D4" />,
+    keywords: ['gap', 'keyword gap', 'overlap', 'missing keywords', 'arbitrage', 'venn', 'content gap']
+  },
+  {
     id: 'keywords',
     title: 'Headings & Keyword Density',
     category: 'Keywords & Competitors',

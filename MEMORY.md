@@ -56,7 +56,7 @@
 - [x] **Phase 14:** Keyword Tracking (Rank tracking, SERP positions, volatility, tagging, desktop vs mobile)
 - [x] **Phase 15:** SERP Integration (Multi-engine SERP matrix, PAA accordions, Google Sensor/Weather volatility radar, feature opportunity roadmap, pixel sandbox, deep-linking)
 - [x] **Phase 16:** Competitor Discovery (Organic competitors matrix, 2D positioning scatter quadrant, head-to-head battles, displacement radar, custom tracking)
-- [ ] **Phase 17:** Keyword Gap
+- [x] **Phase 17:** Keyword Gap (Multi-domain comparison, Missing/Weak/Strong/Shared matrices, visual overlap & Venn distribution, arbitrage quick wins, 1-click tracking)
 - [ ] **Phases 18–19:** Backlinks, Content Analysis
 - [ ] **Phases 20–24:** GEO/Local SEO, AEO, AI Visibility, AI Assistant, Recommendations Engine
 
@@ -89,6 +89,8 @@
 | **ADR-017** | 2026-09-22 | Keyword Tracking Engine with 14-Day Trajectories, Intent Attribution & SERP Feature Mapping | Delivers rank tracking, historical trajectory visualizer, search intent classification, tag grouping, and mobile vs desktop tracking, inaugurating Section 5: Keyword & Competitive Intelligence. | ✅ Accepted |
 | **ADR-018** | 2026-09-22 | Multi-Engine SERP Intelligence, Algorithmic Volatility Radar & Pixel-Accurate Sandbox | Implements server-side `/api/serp` endpoint, multi-engine (Google, Bing) organic ranking matrices with 2026 CTR curves, interactive PAA accordions, 0–10 algorithm volatility weather sensor, feature capture roadmap, pixel-width calculation meters (580px/990px), and bidirectional deep-linking with Keyword Tracking. | ✅ Accepted |
 | **ADR-019** | 2026-09-22 | Automated Organic Competitor Discovery, 2D Positioning Quadrant & SERP Displacement Engine | Integrates `/api/competitors` endpoint, automatic competitor discovery derived from SERP rankings, 2D logarithmic positioning quadrant visualizer (Keywords vs Traffic), side-by-side head-to-head confrontation audits, and fragile ranking displacement playbooks with cross-tab SERP deep-linking. | ✅ Accepted |
+| **ADR-020** | 2026-09-22 | Two-Tier Workspace Navigation, Active Project Switcher & Spotlight Command Palette (⌘K) | Restructures flat 18-button navbar into 4 high-density workspace domains (Audits & Core, Search Integrations, Keywords & Competitors, Developer Tools) with a dynamic contextual sub-nav ribbon, active project selector pill (posterscraft.com), global Spotlight Command Palette (Ctrl+K/⌘K), and refined SaaS card styling with specular rim lighting. | ✅ Accepted |
+| **ADR-021** | 2026-09-22 | Multi-Domain Keyword Gap Engine & Content Arbitrage Pipeline | Delivers `/api/keyword-gap` endpoint comparing target domain against up to 4 rivals across 4 gap segments (Missing, Weak, Strong, Shared), visual Venn overlap distributions, high-ROI low-KD arbitrage quick wins, 1-click Phase 14 tracker synchronization, and CSV/JSON strategy exports, completing Section 5. | ✅ Accepted |
 
 ---
 
@@ -116,8 +118,16 @@
   - Completed Phase 14 (Keyword Tracking: rank tracking, 14-day position trajectories, search intent classification, tag filters, SERP feature detection, desktop vs mobile tracking, add keyword modal, and active dataset of 11 keywords).
   - Completed Phase 15 (SERP Integration: server-side `/api/serp` endpoint, multi-engine Google & Bing search ranking analysis, 2026 CTR decay curve calculations, Featured Snippet breakdown, expandable People Also Ask (PAA) accordion, 0–10 Algorithm Volatility Radar / Google Weather Sensor with 14-day timeline & update log, SERP Feature Opportunity Roadmap with actionable checklists and 1-click plan copying, pixel-accurate snippet sandbox with 580px Title & 990px Description limit bars and multi-platform card previews, and bidirectional deep-linking with Keyword Tracking).
   - Completed Phase 16 (Competitor Discovery: server-side `/api/competitors` endpoint, auto-discovery of organic competitors from SERP scans [AllPosters, Poster Store, Desenio, Society6, Etsy, Art.com], overlap score calculation, 2D market positioning quadrant [Leaders, Established, Specialists, Emerging] with highlighted user pinpoint, interactive head-to-head confrontation audit and keyword face-off table with win/loss advantage badges, SERP displacement radar targeting fragile competitor positions [#2–#7], and bidirectional deep-linking).
-  - Verified Phase 16 live in browser across all 4 subtabs with browser recording and screenshots saved.
-  - Ready for Phase 17: Keyword Gap.
+  - **UI/UX Modernization & De-Cluttering:**
+    - Restructured the 18 wrapping flat navbar buttons into 4 clean Workspace Domains (`Audits & Core`, `Search Integrations`, `Keywords & Competitors`, `Developer Tools`) + `Projects`.
+    - Added Contextual Sub-Nav Ribbon with active emerald gradient pills and location breadcrumbs.
+    - Implemented Active Project Selector Pill (`posterscraft.com ▾`) with dropdown switcher.
+    - Built global Spotlight Command Palette (`Ctrl+K` / `⌘K`) with fuzzy search, keyboard navigation (`↑`, `↓`, `Enter`, `Esc`), and instant tool jumping.
+    - Refined CSS tokens and card styling with inset specular rim lighting (`inset 0 1px 0 rgba(255, 255, 255, 0.07)`), subtle radial gradients, and micro-dot indicators.
+    - Verified live in browser with video recording and screenshots.
+  - Completed Phase 17 (Keyword Gap Analysis: multi-domain keyword matrix comparing active target against up to 4 rivals, Missing/Weak/Strong/Shared segment filtering, visual overlap & Venn distribution breakdown, low-KD high-volume Arbitrage Quick Wins engine, 1-click Phase 14 tracker synchronization with tags, and CSV/JSON strategy exports).
+  - **🏆 Section 5 (Keyword & Competitive Intelligence, Phases 14–17) is 100% complete, verified, and operational.**
+  - Ready for Phase 18: Backlinks (Section 6: Authority & Content).
 
 
 
