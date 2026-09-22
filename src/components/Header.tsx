@@ -14,7 +14,10 @@ import {
   Award,
   Network,
   Zap,
-  LineChart
+  LineChart,
+  Compass,
+  Target,
+  Users
 } from 'lucide-react';
 import { UserProfileDropdown } from './auth/UserProfileDropdown';
 
@@ -28,7 +31,10 @@ export type NavigationTab =
   | 'audit' 
   | 'pagespeed'
   | 'gsc'
+  | 'bing'
+  | 'ranktracker'
   | 'serp' 
+  | 'competitors'
   | 'keywords' 
   | 'links' 
   | 'schema' 
@@ -184,12 +190,39 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('bing')}
+            className={`btn ${activeTab === 'bing' ? 'btn-primary' : 'btn-ghost'}`}
+            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
+          >
+            <Compass size={16} />
+            <span>Bing Webmaster</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('ranktracker')}
+            className={`btn ${activeTab === 'ranktracker' ? 'btn-primary' : 'btn-ghost'}`}
+            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
+          >
+            <Target size={16} />
+            <span>Keyword Tracking</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('serp')}
             className={`btn ${activeTab === 'serp' ? 'btn-primary' : 'btn-ghost'}`}
             style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
           >
             <Search size={16} />
-            <span>SERP & Social Preview</span>
+            <span>SERP Intelligence</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('competitors')}
+            className={`btn ${activeTab === 'competitors' ? 'btn-primary' : 'btn-ghost'}`}
+            style={{ fontSize: '0.825rem', padding: '0.5rem 0.9rem' }}
+          >
+            <Users size={16} />
+            <span>Competitors</span>
           </button>
 
           <button

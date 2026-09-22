@@ -3,7 +3,6 @@ import { Header, NavigationTab } from './components/Header';
 import { UrlInspectorBar } from './components/UrlInspectorBar';
 import { HealthScoreGauge } from './components/HealthScoreGauge';
 import { PageAuditView } from './components/pageaudit/PageAuditView';
-import { SerpSocialPreview } from './components/SerpSocialPreview';
 import { HeadingHierarchyTree } from './components/HeadingHierarchyTree';
 import { KeywordDensityTable } from './components/KeywordDensityTable';
 import { LinksImagesInspector } from './components/LinksImagesInspector';
@@ -21,8 +20,12 @@ import { ScoreSnapshotExplorer } from './components/scoring/ScoreSnapshotExplore
 import { SeoMapGraph } from './components/map/SeoMapGraph';
 import { PageSpeedExplorer } from './components/pagespeed/PageSpeedExplorer';
 import { GoogleSearchConsoleExplorer } from './components/gsc/GoogleSearchConsoleExplorer';
+import { BingWebmasterExplorer } from './components/bing/BingWebmasterExplorer';
+import { KeywordTrackerExplorer } from './components/keywords/KeywordTrackerExplorer';
+import { SerpExplorer } from './components/serp/SerpExplorer';
+import { CompetitorDiscoveryExplorer } from './components/competitors/CompetitorDiscoveryExplorer';
 import { PRESET_SITES } from './engine/presets';
-import { runFullAudit, fetchUrlHtml } from './engine/index';
+import { runFullAudit, fetchUrlHtml, cleanAndSanitizeUrl } from './engine/index';
 import { AuditReport } from './engine/types';
 import { AlertCircle } from 'lucide-react';
 
@@ -40,14 +43,16 @@ export const App: React.FC = () => {
 
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isPasteHtmlOpen, setIsPasteHtmlOpen] = useState(false);
+  const [selectedSerpKeyword, setSelectedSerpKeyword] = useState<string>('vintage movie posters');
 
   // Handle URL scanning
   const handleScanUrl = async (url: string) => {
     setIsLoading(true);
     setErrorMessage(null);
     try {
+      const cleanUrl = cleanAndSanitizeUrl(url);
       // Check if URL matches one of our presets
-      const matchedPreset = PRESET_SITES.find(p => p.url.toLowerCase() === url.toLowerCase() || p.url.replace(/^https?:\/\//, '') === url.replace(/^https?:\/\//, ''));
+      const matchedPreset = PRESET_SITES.find(p => p.url.toLowerCase() === cleanUrl.toLowerCase() || p.url.replace(/^https?:\/\//, '') === cleanUrl.replace(/^https?:\/\//, ''));
       if (matchedPreset) {
         setCurrentHtml(matchedPreset.html);
         const newReport = runFullAudit(matchedPreset.html, matchedPreset.url);
@@ -56,10 +61,10 @@ export const App: React.FC = () => {
         return;
       }
 
-      // Otherwise fetch HTML with proxy fallback
-      const fetchedHtml = await fetchUrlHtml(url);
+      // Fetch HTML server-side via /api/fetch
+      const fetchedHtml = await fetchUrlHtml(cleanUrl);
       setCurrentHtml(fetchedHtml);
-      const newReport = runFullAudit(fetchedHtml, url);
+      const newReport = runFullAudit(fetchedHtml, cleanUrl);
       setReport(newReport);
     } catch (err: any) {
       setErrorMessage(err.message || 'Failed to analyze URL. You can paste the HTML directly using "Paste HTML".');
@@ -226,10 +231,36 @@ export const App: React.FC = () => {
           <GoogleSearchConsoleExplorer />
         )}
 
+        {activeTab === 'bing' && (
+          <BingWebmasterExplorer />
+        )}
+
+        {activeTab === 'ranktracker' && (
+          <KeywordTrackerExplorer
+            onInspectSerp={(kw) => {
+              setSelectedSerpKeyword(kw);
+              setActiveTab('serp');
+            }}
+          />
+        )}
+
         {activeTab === 'serp' && (
-          <SerpSocialPreview
-            metadata={report.metadata}
-            targetUrl={report.targetUrl}
+          <SerpExplorer
+            initialKeyword={selectedSerpKeyword}
+            initialUrl={report.targetUrl}
+            pageMetadata={report.metadata}
+            onNavigateToKeywords={() => setActiveTab('ranktracker')}
+            onNavigateToCompetitors={() => setActiveTab('competitors')}
+          />
+        )}
+
+        {activeTab === 'competitors' && (
+          <CompetitorDiscoveryExplorer
+            onInspectSerp={(kw) => {
+              setSelectedSerpKeyword(kw);
+              setActiveTab('serp');
+            }}
+            onNavigateToKeywords={() => setActiveTab('ranktracker')}
           />
         )}
 

@@ -14,7 +14,6 @@ import {
   Tablet,
   Plus,
   RefreshCw,
-  ExternalLink,
   ShieldCheck,
   FileCode,
   Layers,

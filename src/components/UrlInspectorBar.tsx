@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Globe, Sparkles, Loader2, PlayCircle } from 'lucide-react';
 import { PRESET_SITES } from '../engine/presets';
+import { cleanAndSanitizeUrl } from '../engine/index';
 
 interface UrlInspectorBarProps {
   currentUrl: string;
@@ -20,7 +21,9 @@ export const UrlInspectorBar: React.FC<UrlInspectorBarProps> = ({
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputUrl.trim() && !isLoading) {
-      onScanUrl(inputUrl.trim());
+      const sanitized = cleanAndSanitizeUrl(inputUrl);
+      setInputUrl(sanitized);
+      onScanUrl(sanitized);
     }
   };
 

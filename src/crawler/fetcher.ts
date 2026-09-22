@@ -80,31 +80,32 @@ export class HttpFetcher {
   }
 
   /**
-   * Attempts live network fetch
+   * Attempts live network fetch via server-side /api/fetch endpoint
    */
   private async tryLiveFetch(
     url: string, 
     signal: AbortSignal
   ): Promise<{ statusCode: number; statusText: string; contentType: string; html: string; redirectChain: string[] } | null> {
     try {
-      const res = await fetch(url, {
+      const res = await fetch('/api/fetch', {
+        method: 'POST',
         signal,
         headers: {
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-          'X-Requested-With': 'SEOStudio-Spider'
+          'Content-Type': 'application/json'
         },
-        redirect: 'follow'
+        body: JSON.stringify({ url, timeoutMs: this.limits.timeoutMs || 10000 })
       });
 
-      const contentType = res.headers.get('content-type') || 'text/html';
-      const text = await res.text();
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (!data.ok || !data.html) return null;
 
       return {
-        statusCode: res.status,
-        statusText: res.statusText || 'OK',
-        contentType,
-        html: text,
-        redirectChain: res.redirected ? [res.url] : []
+        statusCode: data.status || 200,
+        statusText: data.statusText || 'OK',
+        contentType: data.headers?.['content-type'] || 'text/html',
+        html: data.html,
+        redirectChain: data.finalUrl && data.finalUrl !== url ? [data.finalUrl] : []
       };
     } catch {
       return null;

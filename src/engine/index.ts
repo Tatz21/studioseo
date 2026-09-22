@@ -65,49 +65,65 @@ export function runFullAudit(html: string, targetUrl: string = 'https://example.
 }
 
 /**
- * Fetches HTML from a target URL with CORS proxy support and fallback.
+ * Sanitizes input URL, auto-correcting typos like "https:///" and trimming whitespace
+ */
+export function cleanAndSanitizeUrl(rawUrl: string): string {
+  if (!rawUrl) return '';
+  let trimmed = rawUrl.trim();
+
+  // Fix multiple slashes after protocol (e.g. "https:///posterscraft.com" -> "https://posterscraft.com")
+  trimmed = trimmed.replace(/^(https?):\/+/i, '$1://');
+
+  if (!/^https?:\/\//i.test(trimmed)) {
+    if (trimmed.startsWith('//')) {
+      trimmed = `https:${trimmed}`;
+    } else {
+      trimmed = `https://${trimmed}`;
+    }
+  }
+
+  return trimmed;
+}
+
+/**
+ * Fetches HTML from a target URL via our server-side crawler API (/api/fetch).
+ * Eliminates browser CORS restrictions and prevents SSRF attacks.
  */
 export async function fetchUrlHtml(targetUrl: string): Promise<string> {
-  let cleanUrl = targetUrl.trim();
-  if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
-    cleanUrl = `https://${cleanUrl}`;
-  }
+  const cleanUrl = cleanAndSanitizeUrl(targetUrl);
 
-  // Attempt direct fetch first
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
-    const resp = await fetch(cleanUrl, { signal: controller.signal });
-    clearTimeout(timeoutId);
-    if (resp.ok) {
-      const html = await resp.text();
-      if (html && html.length > 50) return html;
-    }
-  } catch (e) {
-    // Expected CORS or network blockage in browser sandbox, fallback to proxies
-  }
+    const resp = await fetch('/api/fetch', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ url: cleanUrl, timeoutMs: 15000 })
+    });
 
-  // Attempt via CORS proxy
-  const proxies = [
-    (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-    (u: string) => `https://corsproxy.io/?${encodeURIComponent(u)}`
-  ];
-
-  for (const proxyFn of proxies) {
-    try {
-      const proxyUrl = proxyFn(cleanUrl);
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
-      const resp = await fetch(proxyUrl, { signal: controller.signal });
-      clearTimeout(timeoutId);
-      if (resp.ok) {
-        const text = await resp.text();
-        if (text && text.length > 100) return text;
+    if (!resp.ok) {
+      const errorText = await resp.text();
+      try {
+        const errorJson = JSON.parse(errorText);
+        throw new Error(errorJson.error || `Server returned HTTP ${resp.status}`);
+      } catch {
+        throw new Error(`Server returned HTTP ${resp.status}: ${errorText}`);
       }
-    } catch {
-      continue;
     }
-  }
 
-  throw new Error(`Unable to fetch HTML for ${cleanUrl} due to browser CORS policies. You can use Direct HTML Paste mode or choose one of our verified live presets.`);
+    const data = await resp.json();
+
+    if (!data.ok) {
+      throw new Error(data.error || `Failed to fetch website at ${cleanUrl}`);
+    }
+
+    if (!data.html || data.html.trim().length === 0) {
+      throw new Error(`The website at ${cleanUrl} returned an empty HTML response (HTTP ${data.status || 200}).`);
+    }
+
+    return data.html;
+  } catch (err: any) {
+    throw new Error(`Crawler Error: ${err.message || 'Failed to connect to crawler API'}`);
+  }
 }
+
