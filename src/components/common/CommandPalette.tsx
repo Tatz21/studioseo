@@ -17,14 +17,15 @@ import {
   Code2,
   Database,
   ArrowRight,
-  Download
+  Download,
+  Link2
 } from 'lucide-react';
 import { NavigationTab } from '../Header';
 
 interface CommandItem {
   id: NavigationTab | 'export' | 'paste_html';
   title: string;
-  category: 'Audits & Core' | 'Integrations' | 'Keywords & Competitors' | 'Developer Tools' | 'Projects' | 'Actions';
+  category: 'Audits & Core' | 'Integrations' | 'Keywords & Competitors' | 'Authority & Content' | 'Developer Tools' | 'Projects' | 'Actions';
   description: string;
   icon: React.ReactNode;
   keywords: string[];
@@ -156,6 +157,16 @@ const COMMAND_ITEMS: CommandItem[] = [
     description: 'Heading hierarchy visual tree and unigram/bigram/trigram keyword density table',
     icon: <FileSpreadsheet size={18} color="#A855F7" />,
     keywords: ['density', 'ngrams', 'headings', 'hierarchy', 'h1', 'h2']
+  },
+
+  // Authority & Content
+  {
+    id: 'backlinks',
+    title: 'Backlinks & Domain Authority',
+    category: 'Authority & Content',
+    description: 'Backlink profile explorer, Domain Rating (DR), toxic spam audit, and Google disavow file generator',
+    icon: <Link2 size={18} color="var(--accent-primary)" />,
+    keywords: ['backlinks', 'dr', 'ur', 'inlinks', 'referring domains', 'disavow', 'toxic links', 'authority', 'anchor']
   },
 
   // Developer Tools

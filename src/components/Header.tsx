@@ -20,7 +20,8 @@ import {
   Users,
   ChevronDown,
   Check,
-  ArrowRight
+  ArrowRight,
+  Link2
 } from 'lucide-react';
 import { UserProfileDropdown } from './auth/UserProfileDropdown';
 import { PRESET_SITES } from '../engine/presets';
@@ -40,13 +41,14 @@ export type NavigationTab =
   | 'serp' 
   | 'competitors'
   | 'keywordgap'
+  | 'backlinks'
   | 'keywords' 
   | 'links' 
   | 'schema' 
   | 'robots'
   | 'database';
 
-export type WorkspaceDomain = 'audits' | 'integrations' | 'keywords' | 'devtools' | 'websites';
+export type WorkspaceDomain = 'audits' | 'integrations' | 'keywords' | 'authority' | 'devtools' | 'websites';
 
 export const TAB_TO_WORKSPACE: Record<NavigationTab, WorkspaceDomain> = {
   websites: 'websites',
@@ -63,6 +65,7 @@ export const TAB_TO_WORKSPACE: Record<NavigationTab, WorkspaceDomain> = {
   serp: 'keywords',
   competitors: 'keywords',
   keywordgap: 'keywords',
+  backlinks: 'authority',
   keywords: 'keywords',
   links: 'devtools',
   schema: 'devtools',
@@ -124,6 +127,16 @@ const WORKSPACES: WorkspaceDefinition[] = [
       { id: 'competitors', label: 'Competitor Discovery', icon: <Users size={14} />, badge: 'Phase 16' },
       { id: 'keywordgap', label: 'Keyword Gap', icon: <Layers size={14} />, badge: 'Phase 17' },
       { id: 'keywords', label: 'Headings & Density', icon: <FileSpreadsheet size={14} /> },
+    ]
+  },
+  {
+    id: 'authority',
+    label: 'Authority & Content',
+    defaultTab: 'backlinks',
+    icon: <Link2 size={15} />,
+    description: 'Backlinks explorer, DR/UR scoring, Google disavow & link gap',
+    tools: [
+      { id: 'backlinks', label: 'Backlinks & Authority', icon: <Link2 size={14} />, badge: 'Phase 18' },
     ]
   },
   {
