@@ -11,7 +11,7 @@ interface KeywordGapRequestBody {
 function readJsonBody<T>(req: IncomingMessage): Promise<T> {
   return new Promise((resolve, reject) => {
     let body = '';
-    req.on('data', (chunk) => {
+    req.on('data', (chunk: any) => {
       body += chunk;
       if (body.length > 512 * 1024) {
         reject(new Error('Request payload too large'));
@@ -28,7 +28,7 @@ function readJsonBody<T>(req: IncomingMessage): Promise<T> {
         reject(new Error(`Malformed JSON body: ${err.message}`));
       }
     });
-    req.on('error', (err) => reject(err));
+    req.on('error', (err: any) => reject(err));
   });
 }
 

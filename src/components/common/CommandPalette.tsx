@@ -18,7 +18,8 @@ import {
   Database,
   ArrowRight,
   Download,
-  Link2
+  Link2,
+  FileText
 } from 'lucide-react';
 import { NavigationTab } from '../Header';
 
@@ -167,6 +168,14 @@ const COMMAND_ITEMS: CommandItem[] = [
     description: 'Backlink profile explorer, Domain Rating (DR), toxic spam audit, and Google disavow file generator',
     icon: <Link2 size={18} color="var(--accent-primary)" />,
     keywords: ['backlinks', 'dr', 'ur', 'inlinks', 'referring domains', 'disavow', 'toxic links', 'authority', 'anchor']
+  },
+  {
+    id: 'content',
+    title: 'Content Analysis & NLP Optimizer',
+    category: 'Authority & Content',
+    description: 'Readability indices (Flesch, Fog, SMOG), semantic TF-IDF terms, scannability, and live copywriting editor',
+    icon: <FileText size={18} color="var(--accent-cyan)" />,
+    keywords: ['content', 'readability', 'flesch', 'nlp', 'tf-idf', 'scannability', 'editor', 'copywriting', 'writing assistant']
   },
 
   // Developer Tools

@@ -21,7 +21,8 @@ import {
   ChevronDown,
   Check,
   ArrowRight,
-  Link2
+  Link2,
+  FileText
 } from 'lucide-react';
 import { UserProfileDropdown } from './auth/UserProfileDropdown';
 import { PRESET_SITES } from '../engine/presets';
@@ -42,6 +43,7 @@ export type NavigationTab =
   | 'competitors'
   | 'keywordgap'
   | 'backlinks'
+  | 'content'
   | 'keywords' 
   | 'links' 
   | 'schema' 
@@ -66,6 +68,7 @@ export const TAB_TO_WORKSPACE: Record<NavigationTab, WorkspaceDomain> = {
   competitors: 'keywords',
   keywordgap: 'keywords',
   backlinks: 'authority',
+  content: 'authority',
   keywords: 'keywords',
   links: 'devtools',
   schema: 'devtools',
@@ -137,6 +140,7 @@ const WORKSPACES: WorkspaceDefinition[] = [
     description: 'Backlinks explorer, DR/UR scoring, Google disavow & link gap',
     tools: [
       { id: 'backlinks', label: 'Backlinks & Authority', icon: <Link2 size={14} />, badge: 'Phase 18' },
+      { id: 'content', label: 'Content Analysis', icon: <FileText size={14} />, badge: 'Phase 19' },
     ]
   },
   {

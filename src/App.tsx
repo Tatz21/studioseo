@@ -27,6 +27,7 @@ import { SerpExplorer } from './components/serp/SerpExplorer';
 import { CompetitorDiscoveryExplorer } from './components/competitors/CompetitorDiscoveryExplorer';
 import { KeywordGapExplorer } from './components/keywordgap/KeywordGapExplorer';
 import { BacklinksExplorer } from './components/backlinks/BacklinksExplorer';
+import { ContentAnalysisExplorer } from './components/content/ContentAnalysisExplorer';
 import { PRESET_SITES } from './engine/presets';
 import { runFullAudit, fetchUrlHtml, cleanAndSanitizeUrl } from './engine/index';
 import { AuditReport } from './engine/types';
@@ -307,6 +308,15 @@ export const App: React.FC = () => {
               handleScanUrl(targetUrl);
             }}
             onNavigateToCompetitors={() => setActiveTab('competitors')}
+          />
+        )}
+
+        {activeTab === 'content' && (
+          <ContentAnalysisExplorer
+            currentUrl={report.targetUrl}
+            initialHtml={currentHtml}
+            defaultKeyword={selectedSerpKeyword}
+            onNavigateToKeywords={() => setActiveTab('ranktracker')}
           />
         )}
 

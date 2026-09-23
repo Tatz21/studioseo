@@ -4,6 +4,7 @@ import { handleSerpRequest } from './serpApi';
 import { handleCompetitorRequest } from './competitorApi';
 import { handleKeywordGapRequest } from './gapApi';
 import { handleBacklinksRequest } from './backlinksApi';
+import { handleContentAnalysisRequest } from './contentAnalysisApi';
 
 export interface FetchRequestBody {
   url: string;
@@ -29,7 +30,7 @@ export interface FetchResponseBody {
 function readJsonBody<T>(req: IncomingMessage): Promise<T> {
   return new Promise((resolve, reject) => {
     let body = '';
-    req.on('data', (chunk) => {
+    req.on('data', (chunk: any) => {
       body += chunk;
       // Safety limit: 1MB max payload
       if (body.length > 1024 * 1024) {
@@ -47,7 +48,7 @@ function readJsonBody<T>(req: IncomingMessage): Promise<T> {
         reject(new Error(`Malformed JSON body: ${err.message}`));
       }
     });
-    req.on('error', (err) => reject(err));
+    req.on('error', (err: any) => reject(err));
   });
 }
 
@@ -214,6 +215,11 @@ export function crawlerApiPlugin() {
           return;
         }
 
+        if (url === '/api/content-analysis') {
+          await handleContentAnalysisRequest(req, res);
+          return;
+        }
+
         next();
       });
     },
@@ -248,6 +254,11 @@ export function crawlerApiPlugin() {
 
         if (url === '/api/backlinks') {
           await handleBacklinksRequest(req, res);
+          return;
+        }
+
+        if (url === '/api/content-analysis') {
+          await handleContentAnalysisRequest(req, res);
           return;
         }
 
