@@ -22,7 +22,8 @@ import {
   Check,
   ArrowRight,
   Link2,
-  FileText
+  FileText,
+  MapPin
 } from 'lucide-react';
 import { UserProfileDropdown } from './auth/UserProfileDropdown';
 import { PRESET_SITES } from '../engine/presets';
@@ -44,13 +45,14 @@ export type NavigationTab =
   | 'keywordgap'
   | 'backlinks'
   | 'content'
+  | 'geo'
   | 'keywords' 
   | 'links' 
   | 'schema' 
   | 'robots'
   | 'database';
 
-export type WorkspaceDomain = 'audits' | 'integrations' | 'keywords' | 'authority' | 'devtools' | 'websites';
+export type WorkspaceDomain = 'audits' | 'integrations' | 'keywords' | 'authority' | 'ai' | 'devtools' | 'websites';
 
 export const TAB_TO_WORKSPACE: Record<NavigationTab, WorkspaceDomain> = {
   websites: 'websites',
@@ -69,6 +71,7 @@ export const TAB_TO_WORKSPACE: Record<NavigationTab, WorkspaceDomain> = {
   keywordgap: 'keywords',
   backlinks: 'authority',
   content: 'authority',
+  geo: 'ai',
   keywords: 'keywords',
   links: 'devtools',
   schema: 'devtools',
@@ -141,6 +144,16 @@ const WORKSPACES: WorkspaceDefinition[] = [
     tools: [
       { id: 'backlinks', label: 'Backlinks & Authority', icon: <Link2 size={14} />, badge: 'Phase 18' },
       { id: 'content', label: 'Content Analysis', icon: <FileText size={14} />, badge: 'Phase 19' },
+    ]
+  },
+  {
+    id: 'ai',
+    label: 'AI & Future Search',
+    defaultTab: 'geo',
+    icon: <Sparkles size={15} />,
+    description: 'GEO/Local SEO, AEO, AI visibility & recommendation engines',
+    tools: [
+      { id: 'geo', label: 'GEO & Local SEO', icon: <MapPin size={14} />, badge: 'Phase 20' },
     ]
   },
   {

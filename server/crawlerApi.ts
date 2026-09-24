@@ -5,6 +5,7 @@ import { handleCompetitorRequest } from './competitorApi';
 import { handleKeywordGapRequest } from './gapApi';
 import { handleBacklinksRequest } from './backlinksApi';
 import { handleContentAnalysisRequest } from './contentAnalysisApi';
+import { handleGeoRequest } from './geoApi';
 
 export interface FetchRequestBody {
   url: string;
@@ -220,6 +221,11 @@ export function crawlerApiPlugin() {
           return;
         }
 
+        if (url === '/api/geo') {
+          await handleGeoRequest(req, res);
+          return;
+        }
+
         next();
       });
     },
@@ -259,6 +265,11 @@ export function crawlerApiPlugin() {
 
         if (url === '/api/content-analysis') {
           await handleContentAnalysisRequest(req, res);
+          return;
+        }
+
+        if (url === '/api/geo') {
+          await handleGeoRequest(req, res);
           return;
         }
 

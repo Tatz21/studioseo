@@ -19,14 +19,15 @@ import {
   ArrowRight,
   Download,
   Link2,
-  FileText
+  FileText,
+  MapPin
 } from 'lucide-react';
 import { NavigationTab } from '../Header';
 
 interface CommandItem {
   id: NavigationTab | 'export' | 'paste_html';
   title: string;
-  category: 'Audits & Core' | 'Integrations' | 'Keywords & Competitors' | 'Authority & Content' | 'Developer Tools' | 'Projects' | 'Actions';
+  category: 'Audits & Core' | 'Integrations' | 'Keywords & Competitors' | 'Authority & Content' | 'AI & Future Search' | 'Developer Tools' | 'Projects' | 'Actions';
   description: string;
   icon: React.ReactNode;
   keywords: string[];
@@ -176,6 +177,16 @@ const COMMAND_ITEMS: CommandItem[] = [
     description: 'Readability indices (Flesch, Fog, SMOG), semantic TF-IDF terms, scannability, and live copywriting editor',
     icon: <FileText size={18} color="var(--accent-cyan)" />,
     keywords: ['content', 'readability', 'flesch', 'nlp', 'tf-idf', 'scannability', 'editor', 'copywriting', 'writing assistant']
+  },
+
+  // AI & Future Search
+  {
+    id: 'geo',
+    title: 'GEO & Local SEO Explorer',
+    category: 'AI & Future Search',
+    description: 'Geo-grid rankings (3x3 / 5x5), Google 3-Pack simulator, NAP citations consistency & LocalBusiness schema',
+    icon: <MapPin size={18} color="var(--accent-primary)" />,
+    keywords: ['geo', 'local seo', 'local pack', 'geo grid', 'nap', 'citations', 'google business profile', 'gbp', 'local schema', 'near me', 'map pin']
   },
 
   // Developer Tools
