@@ -23,7 +23,8 @@ import {
   ArrowRight,
   Link2,
   FileText,
-  MapPin
+  MapPin,
+  Eye
 } from 'lucide-react';
 import { UserProfileDropdown } from './auth/UserProfileDropdown';
 import { PRESET_SITES } from '../engine/presets';
@@ -46,6 +47,9 @@ export type NavigationTab =
   | 'backlinks'
   | 'content'
   | 'geo'
+  | 'aeo'
+  | 'aivisibility'
+  | 'assistant'
   | 'keywords' 
   | 'links' 
   | 'schema' 
@@ -72,6 +76,9 @@ export const TAB_TO_WORKSPACE: Record<NavigationTab, WorkspaceDomain> = {
   backlinks: 'authority',
   content: 'authority',
   geo: 'ai',
+  aeo: 'ai',
+  aivisibility: 'ai',
+  assistant: 'ai',
   keywords: 'keywords',
   links: 'devtools',
   schema: 'devtools',
@@ -154,6 +161,9 @@ const WORKSPACES: WorkspaceDefinition[] = [
     description: 'GEO/Local SEO, AEO, AI visibility & recommendation engines',
     tools: [
       { id: 'geo', label: 'GEO & Local SEO', icon: <MapPin size={14} />, badge: 'Phase 20' },
+      { id: 'aeo', label: 'AEO (Answer Engine)', icon: <Bot size={14} />, badge: 'Phase 21' },
+      { id: 'aivisibility', label: 'AI Visibility (LLM SoV)', icon: <Eye size={14} />, badge: 'Phase 22' },
+      { id: 'assistant', label: 'AI SEO Assistant', icon: <Sparkles size={14} />, badge: 'Phase 23' },
     ]
   },
   {

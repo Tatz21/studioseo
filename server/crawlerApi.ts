@@ -6,6 +6,9 @@ import { handleKeywordGapRequest } from './gapApi';
 import { handleBacklinksRequest } from './backlinksApi';
 import { handleContentAnalysisRequest } from './contentAnalysisApi';
 import { handleGeoRequest } from './geoApi';
+import { handleAeoRequest } from './aeoApi';
+import { handleAiVisibilityRequest } from './aiVisibilityApi';
+import { handleAiAssistantRequest } from './aiAssistantApi';
 
 export interface FetchRequestBody {
   url: string;
@@ -226,6 +229,21 @@ export function crawlerApiPlugin() {
           return;
         }
 
+        if (url === '/api/aeo') {
+          await handleAeoRequest(req, res);
+          return;
+        }
+
+        if (url === '/api/ai-visibility') {
+          await handleAiVisibilityRequest(req, res);
+          return;
+        }
+
+        if (url === '/api/ai-assistant') {
+          await handleAiAssistantRequest(req, res);
+          return;
+        }
+
         next();
       });
     },
@@ -270,6 +288,21 @@ export function crawlerApiPlugin() {
 
         if (url === '/api/geo') {
           await handleGeoRequest(req, res);
+          return;
+        }
+
+        if (url === '/api/aeo') {
+          await handleAeoRequest(req, res);
+          return;
+        }
+
+        if (url === '/api/ai-visibility') {
+          await handleAiVisibilityRequest(req, res);
+          return;
+        }
+
+        if (url === '/api/ai-assistant') {
+          await handleAiAssistantRequest(req, res);
           return;
         }
 

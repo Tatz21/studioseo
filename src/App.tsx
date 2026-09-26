@@ -29,6 +29,9 @@ import { KeywordGapExplorer } from './components/keywordgap/KeywordGapExplorer';
 import { BacklinksExplorer } from './components/backlinks/BacklinksExplorer';
 import { ContentAnalysisExplorer } from './components/content/ContentAnalysisExplorer';
 import { GeoLocalSeoExplorer } from './components/geo/GeoLocalSeoExplorer';
+import { AeoExplorer } from './components/aeo/AeoExplorer';
+import { AiVisibilityExplorer } from './components/aivisibility/AiVisibilityExplorer';
+import { AiAssistantExplorer } from './components/aiassistant/AiAssistantExplorer';
 import { PRESET_SITES } from './engine/presets';
 import { runFullAudit, fetchUrlHtml, cleanAndSanitizeUrl } from './engine/index';
 import { AuditReport } from './engine/types';
@@ -325,6 +328,28 @@ export const App: React.FC = () => {
           <GeoLocalSeoExplorer
             targetUrl={report.targetUrl}
             initialKeyword={selectedSerpKeyword}
+          />
+        )}
+
+        {activeTab === 'aeo' && (
+          <AeoExplorer
+            targetUrl={report.targetUrl}
+            initialQuery={selectedSerpKeyword ? `What is the best ${selectedSerpKeyword}?` : undefined}
+          />
+        )}
+
+        {activeTab === 'aivisibility' && (
+          <AiVisibilityExplorer
+            targetUrl={report.targetUrl}
+            initialQuery={selectedSerpKeyword}
+          />
+        )}
+
+        {activeTab === 'assistant' && (
+          <AiAssistantExplorer
+            targetUrl={report.targetUrl}
+            auditReport={report}
+            onNavigateToTab={(tab) => setActiveTab(tab)}
           />
         )}
 

@@ -20,7 +20,8 @@ import {
   Download,
   Link2,
   FileText,
-  MapPin
+  MapPin,
+  Eye
 } from 'lucide-react';
 import { NavigationTab } from '../Header';
 
@@ -187,6 +188,30 @@ const COMMAND_ITEMS: CommandItem[] = [
     description: 'Geo-grid rankings (3x3 / 5x5), Google 3-Pack simulator, NAP citations consistency & LocalBusiness schema',
     icon: <MapPin size={18} color="var(--accent-primary)" />,
     keywords: ['geo', 'local seo', 'local pack', 'geo grid', 'nap', 'citations', 'google business profile', 'gbp', 'local schema', 'near me', 'map pin']
+  },
+  {
+    id: 'aeo',
+    title: 'AEO (Answer Engine Optimization)',
+    category: 'AI & Future Search',
+    description: 'Optimize for Google AI Overviews, Perplexity AI, ChatGPT Search, Speakable voice schema & direct answer sandbox',
+    icon: <Bot size={18} color="var(--accent-primary)" />,
+    keywords: ['aeo', 'answer engine', 'google ai overviews', 'sge', 'perplexity', 'chatgpt search', 'voice search', 'speakable', 'inverted pyramid', 'direct answer', 'llm citation']
+  },
+  {
+    id: 'aivisibility',
+    title: 'AI Visibility & LLM Share of Voice',
+    category: 'AI & Future Search',
+    description: 'Track brand citation frequency across ChatGPT, Gemini, Claude, Perplexity, Copilot, hallucination monitoring & crawler bot policy',
+    icon: <Eye size={18} color="#06B6D4" />,
+    keywords: ['ai visibility', 'share of voice', 'sov', 'llm', 'chatgpt', 'claude', 'gemini', 'perplexity', 'copilot', 'hallucination', 'crawlers', 'gptbot', 'brand mentions']
+  },
+  {
+    id: 'assistant',
+    title: 'AI SEO Assistant',
+    category: 'AI & Future Search',
+    description: 'Autonomous multi-persona chat assistant for code fixes, schema generation, content drafts, and technical audits',
+    icon: <Bot size={18} color="var(--accent-primary)" />,
+    keywords: ['assistant', 'ai chat', 'copilot', 'advisor', 'bot', 'expert', 'prompt', 'fix code', 'meta tags', 'cmo report']
   },
 
   // Developer Tools
